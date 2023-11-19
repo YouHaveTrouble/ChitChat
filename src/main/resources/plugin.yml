@@ -1,0 +1,39 @@
+name: ChitChat
+version: '${project.version}'
+main: me.youhavetrouble.chitchat.ChitChat
+api-version: '1.20'
+load: STARTUP
+authors: [YouHaveTrouble]
+description: Just a chat plugin
+website: youhavetrouble.me
+softdepend:
+  - PlaceholderAPI
+permissions:
+  chitchat.color:
+    description: Allows you to use all formatting in chat
+    default: op
+  chitchat.format:
+    description: Allows you to use color tags in chat
+    default: op
+    children:
+      chitchat.format.color: true
+      chitchat.format.bold: true
+      chitchat.format.italic: true
+      chitchat.format.underline: true
+      chitchat.format.strikethrough: true
+      chitchat.format.obfuscated: true
+  chitchat.format.bold:
+    description: Allows you to use bold tags in chat
+    default: false
+  chitchat.format.italic:
+    description: Allows you to use italic tags in chat
+    default: false
+  chitchat.format.underline:
+    description: Allows you to use underline tags in chat
+    default: false
+  chitchat.format.strikethrough:
+    description: Allows you to use strikethrough tags in chat
+    default: false
+  chitchat.format.obfuscated:
+    description: Allows you to use obfuscated tags in chat
+    default: false
