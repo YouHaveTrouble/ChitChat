@@ -2,8 +2,13 @@ package me.youhavetrouble.chitchat.renderer;
 
 import io.papermc.paper.chat.ChatRenderer;
 import me.clip.placeholderapi.PlaceholderAPI;
+import me.youhavetrouble.chitchat.ChitChat;
 import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.chat.SignedMessage;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.Tag;
@@ -14,29 +19,34 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
+import java.util.*;
 
 public class ChitChatRenderer implements ChatRenderer {
 
+    private final ChitChat plugin;
     private final String format;
-    private final boolean papiHooked;
     private final Collection<TagResolver> tagResolvers = new ArrayList<>();
+    private final SignedMessage signedMessage;
 
-    public ChitChatRenderer(String format, boolean papiHooked) {
-        this.papiHooked = papiHooked;
+    public ChitChatRenderer(ChitChat plugin, String format, SignedMessage signedMessage) {
+        this.plugin = plugin;
+        this.signedMessage = signedMessage;
         this.format = format;
         this.tagResolvers.add(StandardTags.defaults());
     }
 
     @Override
-    public @NotNull Component render(@NotNull Player player, @NotNull Component playerDisplayName, @NotNull Component chatMessage, @NotNull Audience audience) {
+    public @NotNull Component render(
+            @NotNull Player player,
+            @NotNull Component playerDisplayName,
+            @NotNull Component chatMessage,
+            @NotNull Audience audience
+    ) {
 
         Collection<TagResolver> resolvers = new ArrayList<>(tagResolvers);
         resolvers.add(messageResolver(player, chatMessage));
         resolvers.add(playerNameResolver(playerDisplayName));
-        resolvers.add(placeholderTag(player));
+        resolvers.add(placeholderResolver(player));
 
         MiniMessage formatter = MiniMessage
                 .builder()
@@ -50,7 +60,27 @@ public class ChitChatRenderer implements ChatRenderer {
                 )
                 .build();
 
-        return formatter.deserialize(format);
+        Component formattedMesage = formatter.deserialize(format);
+        UUID messageId = signedMessage != null ? plugin.cacheSignature(signedMessage.signature()) : null;
+
+        if (audience instanceof Player recipentPlayer && recipentPlayer.hasPermission("chitchat.deletemessage")) {
+
+            if (messageId == null) return formattedMesage;
+
+            Component deleteMessageButton = Component.text("[x]")
+                    .color(NamedTextColor.RED)
+                    .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/deletemessage " + messageId))
+                    .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to delete this message.")));
+            formattedMesage = formattedMesage.append(deleteMessageButton);
+        }
+        return formattedMesage;
+    }
+
+    private TagResolver playerNameResolver(Component displayName) {
+        return TagResolver.resolver(
+                "playername",
+                (argumentQueue, context) -> Tag.selfClosingInserting(displayName)
+        );
     }
 
     private TagResolver messageResolver(Player player, Component message) {
@@ -103,14 +133,7 @@ public class ChitChatRenderer implements ChatRenderer {
         );
     }
 
-    private TagResolver playerNameResolver(Component displayName) {
-        return TagResolver.resolver(
-                "playername",
-                (argumentQueue, context) -> Tag.selfClosingInserting(displayName)
-        );
-    }
-
-    private @NotNull TagResolver placeholderTag(final @NotNull Player player) {
+    private @NotNull TagResolver placeholderResolver(final @NotNull Player player) {
         return TagResolver.resolver("placeholder", (argumentQueue, context) -> {
             final String placeholder = argumentQueue.popOr("placeholder tag requires an argument").value();
             switch (placeholder) {
@@ -121,7 +144,7 @@ public class ChitChatRenderer implements ChatRenderer {
                     return Tag.selfClosingInserting(player.displayName());
                 }
                 default -> {
-                    if (!papiHooked) return Tag.selfClosingInserting(Component.text(placeholder));
+                    if (!plugin.isPapiHooked()) return Tag.selfClosingInserting(Component.text(placeholder));
 
                     final String parsedPlaceholder = PlaceholderAPI.setPlaceholders(player, '%' + placeholder + '%');
 

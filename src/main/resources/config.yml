@@ -1,1 +1,6 @@
+# Base placeholders
+# <playername> - Player's display name
+# <message> - Message sent by player
+# <placeholder:papi_placeholder> - PlaceholderAPI placeholder
+
 format: "<playername>: <message>"

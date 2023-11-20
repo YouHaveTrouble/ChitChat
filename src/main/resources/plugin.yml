@@ -2,18 +2,22 @@ name: ChitChat
 version: '${project.version}'
 main: me.youhavetrouble.chitchat.ChitChat
 api-version: '1.20'
-load: STARTUP
+load: POSTWORLD
 authors: [YouHaveTrouble]
 description: Just a chat plugin
 website: youhavetrouble.me
+folia-supported: true
 softdepend:
   - PlaceholderAPI
 permissions:
+  chitchat.deletemessage:
+    description: Allows for deletion of messages
+    default: op
   chitchat.color:
-    description: Allows you to use all formatting in chat
+    description: Allows you to use color tags in chat
     default: op
   chitchat.format:
-    description: Allows you to use color tags in chat
+    description: Allows you to use all formatting in chat
     default: op
     children:
       chitchat.format.color: true
