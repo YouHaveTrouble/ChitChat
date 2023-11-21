@@ -19,7 +19,13 @@ public class ChatListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void onChat(AsyncChatEvent event) {
-        event.renderer(new ChitChatRenderer(plugin, plugin.getFormat(), event.signedMessage()));
+        event.renderer(new ChitChatRenderer(
+                plugin,
+                plugin.getFormat(),
+                event.signedMessage(),
+                event.getPlayer(),
+                event.originalMessage()
+        ));
     }
 
 }

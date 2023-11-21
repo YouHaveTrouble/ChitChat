@@ -24,30 +24,24 @@ import java.util.*;
 public class ChitChatRenderer implements ChatRenderer {
 
     private final ChitChat plugin;
-    private final String format;
-    private final Collection<TagResolver> tagResolvers = new ArrayList<>();
-    private final SignedMessage signedMessage;
+    private final UUID messageId;
 
-    public ChitChatRenderer(ChitChat plugin, String format, SignedMessage signedMessage) {
-        this.plugin = plugin;
-        this.signedMessage = signedMessage;
-        this.format = format;
-        this.tagResolvers.add(StandardTags.defaults());
-    }
+    private final Component renderedMessage;
 
-    @Override
-    public @NotNull Component render(
-            @NotNull Player player,
-            @NotNull Component playerDisplayName,
-            @NotNull Component chatMessage,
-            @NotNull Audience audience
+    public ChitChatRenderer(
+            ChitChat plugin,
+            String format,
+            SignedMessage signedMessage,
+            Player player,
+            Component chatMessage
     ) {
-
-        Collection<TagResolver> resolvers = new ArrayList<>(tagResolvers);
+        this.plugin = plugin;
+        this.messageId = signedMessage != null ? plugin.cacheSignature(signedMessage.signature()) : null;
+        Collection<TagResolver> resolvers = new ArrayList<>();
+        resolvers.add(StandardTags.defaults());
         resolvers.add(messageResolver(player, chatMessage));
-        resolvers.add(playerNameResolver(playerDisplayName));
+        resolvers.add(playerNameResolver(player.displayName()));
         resolvers.add(placeholderResolver(player));
-
         MiniMessage formatter = MiniMessage
                 .builder()
                 .tags(
@@ -60,20 +54,27 @@ public class ChitChatRenderer implements ChatRenderer {
                 )
                 .build();
 
-        Component formattedMesage = formatter.deserialize(format);
-        UUID messageId = signedMessage != null ? plugin.cacheSignature(signedMessage.signature()) : null;
+        this.renderedMessage = formatter.deserialize(format);
+    }
 
+    @Override
+    public @NotNull Component render(
+            @NotNull Player player,
+            @NotNull Component playerDisplayName,
+            @NotNull Component chatMessage,
+            @NotNull Audience audience
+    ) {
         if (audience instanceof Player recipentPlayer && recipentPlayer.hasPermission("chitchat.deletemessage")) {
-
-            if (messageId == null) return formattedMesage;
-
-            Component deleteMessageButton = Component.text("[x]")
+            if (messageId == null) return renderedMessage;
+            Component deleteMessageButton = Component.space().append(
+                    Component.text("[x]")
                     .color(NamedTextColor.RED)
                     .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/deletemessage " + messageId))
-                    .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to delete this message.")));
-            formattedMesage = formattedMesage.append(deleteMessageButton);
+                    .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to delete this message.")))
+            );
+            return renderedMessage.append(deleteMessageButton);
         }
-        return formattedMesage;
+        return renderedMessage;
     }
 
     private TagResolver playerNameResolver(Component displayName) {
