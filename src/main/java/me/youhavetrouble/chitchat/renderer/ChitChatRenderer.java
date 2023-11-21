@@ -25,7 +25,6 @@ public class ChitChatRenderer implements ChatRenderer {
 
     private final ChitChat plugin;
     private final UUID messageId;
-
     private final Component renderedMessage;
 
     public ChitChatRenderer(
@@ -42,18 +41,12 @@ public class ChitChatRenderer implements ChatRenderer {
         resolvers.add(messageResolver(player, chatMessage));
         resolvers.add(playerNameResolver(player.displayName()));
         resolvers.add(placeholderResolver(player));
-        MiniMessage formatter = MiniMessage
-                .builder()
-                .tags(
-                        TagResolver
-                                .builder()
-                                .resolvers(
-                                        resolvers
-                                )
-                                .build()
-                )
-                .build();
-
+        MiniMessage formatter = MiniMessage.builder()
+                .tags(TagResolver
+                        .builder()
+                        .resolvers(resolvers)
+                        .build()
+                ).build();
         this.renderedMessage = formatter.deserialize(format);
     }
 
@@ -68,9 +61,16 @@ public class ChitChatRenderer implements ChatRenderer {
             if (messageId == null) return renderedMessage;
             Component deleteMessageButton = Component.space().append(
                     Component.text("[x]")
-                    .color(NamedTextColor.RED)
-                    .clickEvent(ClickEvent.clickEvent(ClickEvent.Action.RUN_COMMAND, "/deletemessage " + messageId))
-                    .hoverEvent(HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("Click to delete this message.")))
+                            .color(NamedTextColor.RED)
+                            .clickEvent(ClickEvent.clickEvent(
+                                    ClickEvent.Action.RUN_COMMAND,
+                                    "/deletemessage " + messageId
+                                    )
+                            )
+                            .hoverEvent(HoverEvent.hoverEvent(
+                                    HoverEvent.Action.SHOW_TEXT,
+                                    Component.text("Click to delete this message.")
+                            ))
             );
             return renderedMessage.append(deleteMessageButton);
         }
@@ -150,7 +150,8 @@ public class ChitChatRenderer implements ChatRenderer {
                     final String parsedPlaceholder = PlaceholderAPI.setPlaceholders(player, '%' + placeholder + '%');
 
                     if (parsedPlaceholder.contains(LegacyComponentSerializer.SECTION_CHAR + "")) {
-                        Component componentPlaceholder = LegacyComponentSerializer.legacySection().deserialize(parsedPlaceholder);
+                        Component componentPlaceholder = LegacyComponentSerializer.legacySection()
+                                .deserialize(parsedPlaceholder);
                         return Tag.selfClosingInserting(componentPlaceholder);
                     }
 
