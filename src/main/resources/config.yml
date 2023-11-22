@@ -4,3 +4,7 @@
 # <placeholder:papi_placeholder> - PlaceholderAPI placeholder
 
 format: "<playername>: <message>"
+
+# How many messages back to keep for deletion purposes.
+# Changing this will only take effect on server restart.
+signature-cache-size: 1000

@@ -14,13 +14,14 @@ public final class ChitChat extends JavaPlugin {
 
     private boolean papiHooked = false;
 
-    private final SignatureCache signatures = new SignatureCache(1000);
+    private SignatureCache signatures;
 
     private String format;
 
     @Override
     public void onEnable() {
         reloadPluginConfig();
+        this.signatures = new SignatureCache(getConfig().getInt("signature-cache-size", 1000));
         new RemoveMessageCommand(this);
     }
 
