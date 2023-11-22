@@ -1,5 +1,7 @@
 package me.youhavetrouble.chitchat;
 
+import dev.jorel.commandapi.CommandAPI;
+import dev.jorel.commandapi.CommandAPIBukkitConfig;
 import me.youhavetrouble.chitchat.commands.RemoveMessageCommand;
 import me.youhavetrouble.chitchat.listeners.ChatListener;
 import net.kyori.adventure.chat.SignedMessage;
@@ -22,7 +24,19 @@ public final class ChitChat extends JavaPlugin {
     public void onEnable() {
         reloadPluginConfig();
         this.signatures = new SignatureCache(getConfig().getInt("signature-cache-size", 1000));
+
+        CommandAPI.onLoad(
+                new CommandAPIBukkitConfig(this)
+                        .shouldHookPaperReload(true)
+        );
+        CommandAPI.onEnable();
+
         new RemoveMessageCommand(this);
+    }
+
+    @Override
+    public void onDisable() {
+        CommandAPI.onDisable();
     }
 
     public void reloadPluginConfig() {
