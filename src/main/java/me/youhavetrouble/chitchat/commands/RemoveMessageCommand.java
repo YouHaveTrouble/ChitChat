@@ -18,12 +18,14 @@ public class RemoveMessageCommand {
                 .withArguments(new UUIDArgument("signature_id"))
                 .executes((sender, args) -> {
                     UUID signatureId = (UUID) args.get("signature_id");
+                    if (signatureId == null) return;
                     SignedMessage.Signature signature = plugin.getCachedSignature(signatureId);
                     if (signature == null) {
                         sender.sendMessage(Component.text("No message with that id found", NamedTextColor.RED));
                         return;
                     }
                     plugin.getServer().deleteMessage(signature);
+                    plugin.removeCachedSignature(signatureId);
                 })
                 .register();
 

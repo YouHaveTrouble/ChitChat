@@ -8,6 +8,7 @@ import net.kyori.adventure.chat.SignedMessage;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
@@ -70,6 +71,10 @@ public final class ChitChat extends JavaPlugin {
     @Nullable
     public SignedMessage.Signature getCachedSignature(UUID uuid) {
         return signatures.get(uuid);
+    }
+
+    public void removeCachedSignature(@NotNull UUID uuid) {
+        signatures.remove(uuid);
     }
 
     public UUID cacheSignature(SignedMessage.Signature signature) {
