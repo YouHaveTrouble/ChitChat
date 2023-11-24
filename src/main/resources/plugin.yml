@@ -16,6 +16,15 @@ permissions:
   chitchat.color:
     description: Allows you to use color tags in chat
     default: op
+  chitchat.rainbow:
+    description: Allows you to use rainbow tags in chat
+    default: op
+  chitchat.gradient:
+    description: Allows you to use gradient tags in chat
+    default: op
+  chitchat.font:
+    description: Allows you to use font tags in chat
+    default: op
   chitchat.format:
     description: Allows you to use all formatting in chat
     default: op

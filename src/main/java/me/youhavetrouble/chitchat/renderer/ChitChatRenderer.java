@@ -91,9 +91,14 @@ public class ChitChatRenderer implements ChatRenderer {
         if (player.hasPermission("chitchat.color")) {
             resolvers.add(StandardTags.color());
         }
-
         if (player.hasPermission("chitchat.gradient")) {
             resolvers.add(StandardTags.gradient());
+        }
+        if (player.hasPermission("chitchat.rainbow")) {
+            resolvers.add(StandardTags.rainbow());
+        }
+        if (player.hasPermission("chitchat.font")) {
+            resolvers.add(StandardTags.font());
         }
 
         if (player.hasPermission("chitchat.decoration")) {
