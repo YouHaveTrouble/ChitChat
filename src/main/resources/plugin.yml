@@ -29,7 +29,6 @@ permissions:
     description: Allows you to use all formatting in chat
     default: op
     children:
-      chitchat.format.color: true
       chitchat.format.bold: true
       chitchat.format.italic: true
       chitchat.format.underline: true
