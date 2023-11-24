@@ -19,8 +19,8 @@ advantage of minecraft's text component system.
 
 #### PAPI Placeholders
 
-Plugin requires you to wrap placeholders in a `\<placeholder:papi_placeholder>` format, so for example
-`%player_displayname%` would be `\<placeholder:player_displayname>`.
+Plugin requires you to wrap placeholders in a `<placeholder:papi_placeholder>` format, so for example
+`%player_displayname%` would be `<placeholder:player_displayname>`.
 
 ### Ability for moderators to delete messages
 
