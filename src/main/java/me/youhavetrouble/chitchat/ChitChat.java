@@ -2,6 +2,7 @@ package me.youhavetrouble.chitchat;
 
 import dev.jorel.commandapi.CommandAPI;
 import dev.jorel.commandapi.CommandAPIBukkitConfig;
+import me.youhavetrouble.chitchat.commands.ReloadCommand;
 import me.youhavetrouble.chitchat.commands.RemoveMessageCommand;
 import me.youhavetrouble.chitchat.listeners.ChatListener;
 import net.kyori.adventure.chat.SignedMessage;
@@ -33,6 +34,7 @@ public final class ChitChat extends JavaPlugin {
         CommandAPI.onEnable();
 
         new RemoveMessageCommand(this);
+        new ReloadCommand(this);
     }
 
     @Override
@@ -53,12 +55,9 @@ public final class ChitChat extends JavaPlugin {
             getLogger().severe("Error loading config: " + e.getMessage());
         }
 
-
-
         HandlerList.unregisterAll(this);
         getServer().getPluginManager().registerEvents(new ChatListener(this), this);
     }
-
 
     public boolean isPapiHooked() {
         return papiHooked;
