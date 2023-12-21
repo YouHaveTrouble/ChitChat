@@ -141,7 +141,15 @@ public class ChitChatRenderer implements ChatRenderer {
 
     private @NotNull TagResolver placeholderResolver(final @NotNull Player player) {
         return TagResolver.resolver("placeholder", (argumentQueue, context) -> {
-            final String placeholder = argumentQueue.popOr("placeholder tag requires an argument").value();
+
+            List<String> args = new ArrayList<>();
+
+            while (argumentQueue.hasNext()) {
+                args.add(argumentQueue.popOr("placeholder tag requires an argument").value());
+            }
+
+            final String placeholder = String.join(":", args);
+
             switch (placeholder) {
                 case "name" -> {
                     return Tag.selfClosingInserting(player.name());
