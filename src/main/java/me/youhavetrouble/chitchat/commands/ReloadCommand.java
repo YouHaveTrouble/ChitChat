@@ -11,7 +11,7 @@ public class ReloadCommand {
 
     public ReloadCommand(ChitChat plugin) {
 
-        new CommandAPICommand("chitchat.command")
+        new CommandAPICommand("chitchat")
                 .withSubcommand(new CommandAPICommand("reload")
                         .withPermission("chitchat.command.reload")
                         .executes((sender, args) -> {
