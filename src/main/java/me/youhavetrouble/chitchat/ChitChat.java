@@ -48,8 +48,9 @@ public final class ChitChat extends JavaPlugin {
 
         try {
             saveDefaultConfig();
+            reloadConfig();
             FileConfiguration config = getConfig();
-            this.format = config.getString("format");
+            this.format = config.getString("format","<playername>: <message>");
 
         } catch (Exception e) {
             getLogger().severe("Error loading config: " + e.getMessage());

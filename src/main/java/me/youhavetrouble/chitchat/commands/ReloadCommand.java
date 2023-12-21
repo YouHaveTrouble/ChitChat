@@ -5,8 +5,6 @@ import me.youhavetrouble.chitchat.ChitChat;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 
-import java.util.UUID;
-
 public class ReloadCommand {
 
     public ReloadCommand(ChitChat plugin) {
