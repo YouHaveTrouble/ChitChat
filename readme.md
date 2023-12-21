@@ -29,9 +29,9 @@ will delete the message using that messages associated chat signature.
 
 ### Using colors and formatting in messages
 
-You can allow players to use colors and formatting in their messages by giving them `chitchat.formatting` permission.
+You can allow players to use colors and formatting in their messages by giving them `chitchat.formatt` permission.
 If you want finer control over which minimessage tags are allowed, here's a full list of available options in a
-`permissiion: tag` format:
+`permission: tag` format:
 ```yaml
 chitchat.color: <color> tags
 chitchat.rainbow: <rainbow> tags
