@@ -15,7 +15,7 @@ public class ChitChatCommand extends Command {
     private final ChitChat plugin;
 
     public ChitChatCommand(ChitChat plugin) {
-        super("chitchat", "Main ChitChat command", "/chitchat", new ArrayList<>(0));
+        super("chitchat", "Main ChitChat command", "/chitchat <arg>", new ArrayList<>(0));
         this.plugin = plugin;
         setPermission("chitchat.command.reload");
     }
