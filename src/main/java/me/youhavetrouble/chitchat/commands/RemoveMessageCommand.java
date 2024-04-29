@@ -1,34 +1,55 @@
 package me.youhavetrouble.chitchat.commands;
 
-import dev.jorel.commandapi.CommandAPICommand;
-import dev.jorel.commandapi.arguments.UUIDArgument;
 import me.youhavetrouble.chitchat.ChitChat;
 import net.kyori.adventure.chat.SignedMessage;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
-public class RemoveMessageCommand {
+public class RemoveMessageCommand extends Command {
+
+    private final ChitChat plugin;
 
     public RemoveMessageCommand(ChitChat plugin) {
+        super("deletemessage", "Deletes message with given id", "/deletemessage <signature_id>", new ArrayList<>());
+        setPermission("chitchat.deletemessage");
+        this.plugin = plugin;
+    }
 
-        new CommandAPICommand("deletemessage")
-                .withPermission("chitchat.deletemessage")
-                .withArguments(new UUIDArgument("signature_id"))
-                .executes((sender, args) -> {
-                    UUID signatureId = (UUID) args.get("signature_id");
-                    if (signatureId == null) return;
-                    SignedMessage.Signature signature = plugin.getCachedSignature(signatureId);
-                    if (signature == null) {
-                        sender.sendMessage(Component.text("No message with that id found", NamedTextColor.RED));
-                        return;
-                    }
-                    plugin.getServer().deleteMessage(signature);
-                    plugin.removeCachedSignature(signatureId);
-                })
-                .register();
+    @Override
+    public boolean execute(@NotNull CommandSender commandSender, @NotNull String s, @NotNull String[] strings) {
 
+        if (strings.length != 1) {
+            commandSender.sendMessage(Component.text(getUsage()));
+            return false;
+        }
+
+        try {
+            UUID signatureId = UUID.fromString(strings[0]);
+            SignedMessage.Signature signature = plugin.getCachedSignature(signatureId);
+            if (signature == null) {
+                commandSender.sendMessage(Component.text("No message with that id found", NamedTextColor.RED));
+                return true;
+            }
+            plugin.getServer().deleteMessage(signature);
+            plugin.removeCachedSignature(signatureId);
+            return true;
+        } catch (IllegalArgumentException e) {
+            commandSender.sendMessage(Component.text("Invalid message id", NamedTextColor.RED));
+            return true;
+        }
+
+    }
+
+    @Override
+    public @NotNull List<String> tabComplete(@NotNull CommandSender sender, @NotNull String alias, @NotNull String[] args) {
+        return new ArrayList<>();
     }
 
 }
