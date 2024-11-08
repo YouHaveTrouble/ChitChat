@@ -1,7 +1,7 @@
 package me.youhavetrouble.chitchat.commands;
 
 import me.youhavetrouble.chitchat.ChitChat;
-import net.kyori.adventure.chat.SignedMessage;
+import me.youhavetrouble.chitchat.MessageData;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
@@ -32,13 +32,12 @@ public class RemoveMessageCommand extends Command {
 
         try {
             UUID signatureId = UUID.fromString(strings[0]);
-            SignedMessage.Signature signature = plugin.getCachedSignature(signatureId);
-            if (signature == null) {
+            MessageData messageData = plugin.getCachedSignature(signatureId);
+            if (messageData == null) {
                 commandSender.sendMessage(Component.text("No message with that id found", NamedTextColor.RED));
                 return true;
             }
-            plugin.getServer().deleteMessage(signature);
-            plugin.removeCachedSignature(signatureId);
+            plugin.deleteMessages(signatureId);
             return true;
         } catch (IllegalArgumentException e) {
             commandSender.sendMessage(Component.text("Invalid message id", NamedTextColor.RED));

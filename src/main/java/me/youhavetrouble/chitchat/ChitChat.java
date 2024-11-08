@@ -2,14 +2,19 @@ package me.youhavetrouble.chitchat;
 
 import me.youhavetrouble.chitchat.commands.ChitChatCommand;
 import me.youhavetrouble.chitchat.commands.RemoveMessageCommand;
+import me.youhavetrouble.chitchat.commands.RemovePlayersMessagesCommand;
 import me.youhavetrouble.chitchat.listeners.ChatListener;
 import net.kyori.adventure.chat.SignedMessage;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collection;
+import java.util.Set;
 import java.util.UUID;
 
 public final class ChitChat extends JavaPlugin {
@@ -27,6 +32,7 @@ public final class ChitChat extends JavaPlugin {
 
         getServer().getCommandMap().register("chitchat", new ChitChatCommand(this));
         getServer().getCommandMap().register("chitchat", new RemoveMessageCommand(this));
+        getServer().getCommandMap().register("chitchat", new RemovePlayersMessagesCommand(this));
 
         new RemoveMessageCommand(this);
         new ChitChatCommand(this);
@@ -59,15 +65,12 @@ public final class ChitChat extends JavaPlugin {
     }
 
     @Nullable
-    public SignedMessage.Signature getCachedSignature(UUID uuid) {
+    public MessageData getCachedSignature(UUID uuid) {
         return signatures.get(uuid);
     }
 
-    public void removeCachedSignature(@NotNull UUID uuid) {
-        signatures.remove(uuid);
-    }
-
-    public UUID cacheSignature(SignedMessage.Signature signature) {
+    public UUID cacheSignature(@NotNull SignedMessage signedMessage, Player player) {
+        SignedMessage.Signature signature = signedMessage.signature();
         if (signature == null) return null;
 
         UUID id = UUID.nameUUIDFromBytes(signature.bytes());
@@ -76,8 +79,37 @@ public final class ChitChat extends JavaPlugin {
                 id = UUID.randomUUID();
             }
         }
-        signatures.put(id, signature);
+        signatures.put(id, new MessageData(signedMessage, id, player.getUniqueId()));
         return id;
+    }
+
+    public void deleteMessages(UUID... messageIds) {
+        for (UUID messageId : messageIds) {
+            MessageData messageData = signatures.get(messageId);
+            if (messageData == null) continue;
+            if (!messageData.signedMessage().canDelete()) return;
+            if (messageData.signedMessage().signature() == null) return;
+            getServer().deleteMessage(messageData.signedMessage().signature());
+            signatures.remove(messageId);
+        }
+    }
+
+    public void deleteMessages(@NotNull Collection<UUID> messageIds) {
+        for (UUID messageId : messageIds) {
+            MessageData messageData = signatures.get(messageId);
+            if (messageData == null) continue;
+            if (!messageData.signedMessage().canDelete()) return;
+            if (messageData.signedMessage().signature() == null) return;
+            getServer().deleteMessage(messageData.signedMessage().signature());
+            signatures.remove(messageId);
+        }
+    }
+
+    public void deleteMessages(OfflinePlayer offlinePlayer) {
+        Set<UUID> messages = signatures.getMessagesByPlayerUUID(offlinePlayer.getUniqueId());
+        getLogger().info("Deleting " + messages.size() + " messages for " + offlinePlayer.getName());
+        deleteMessages(messages);
+        signatures.removeMessagesByPlayerUUID(offlinePlayer.getUniqueId());
     }
 
 }

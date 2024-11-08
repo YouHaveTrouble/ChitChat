@@ -35,7 +35,7 @@ public class ChitChatRenderer implements ChatRenderer {
             Component chatMessage
     ) {
         this.plugin = plugin;
-        this.messageId = signedMessage != null ? plugin.cacheSignature(signedMessage.signature()) : null;
+        this.messageId = signedMessage != null ? plugin.cacheSignature(signedMessage, player) : null;
         Collection<TagResolver> resolvers = new ArrayList<>();
         resolvers.add(StandardTags.defaults());
         resolvers.add(messageResolver(player, chatMessage));
