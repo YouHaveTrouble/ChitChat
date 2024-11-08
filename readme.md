@@ -27,6 +27,8 @@ Plugin requires you to wrap placeholders in a `<placeholder:papi_placeholder>` f
 Players with `chitchat.deletemessage` permission will see a red [x] next to every player message in chat. Clicking it
 will delete the message using that messages associated chat signature.
 
+There is also `deleteplayermessages <player>` command with permission `chitchat.deleteplayermessages` that will delete all messages sent by specified player.
+
 ### Using colors and formatting in messages
 
 You can allow players to use colors and formatting in their messages by giving them `chitchat.formatt` permission.
