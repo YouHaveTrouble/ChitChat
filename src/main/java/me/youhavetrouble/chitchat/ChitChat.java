@@ -107,7 +107,6 @@ public final class ChitChat extends JavaPlugin {
 
     public void deleteMessages(OfflinePlayer offlinePlayer) {
         Set<UUID> messages = signatures.getMessagesByPlayerUUID(offlinePlayer.getUniqueId());
-        getLogger().info("Deleting " + messages.size() + " messages for " + offlinePlayer.getName());
         deleteMessages(messages);
         signatures.removeMessagesByPlayerUUID(offlinePlayer.getUniqueId());
     }
