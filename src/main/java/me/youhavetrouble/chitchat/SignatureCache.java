@@ -47,7 +47,9 @@ public class SignatureCache extends LinkedHashMap<UUID, MessageData> {
     }
 
     public Set<UUID> getMessagesByPlayerUUID(UUID playerId) {
-        return Set.copyOf(playerMessages.get(playerId));
+        Set<UUID> messages = playerMessages.get(playerId);
+        if (messages == null) return Collections.emptySet();
+        return Set.copyOf(messages);
     }
 
 }

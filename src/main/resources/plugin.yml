@@ -1,11 +1,11 @@
 name: ChitChat
 version: '${project.version}'
-main: me.youhavetrouble.chitchat.ChitChat
+main: '${project.groupId}.${project.artifactId}'
 api-version: '26.3'
 load: POSTWORLD
 authors: [YouHaveTrouble]
 description: Just a chat plugin
-website: youhavetrouble.me
+website: https://youhavetrouble.me
 folia-supported: true
 softdepend:
   - PlaceholderAPI
