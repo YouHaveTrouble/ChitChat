@@ -1,7 +1,7 @@
 name: ChitChat
 version: '${project.version}'
 main: me.youhavetrouble.chitchat.ChitChat
-api-version: '1.20'
+api-version: '26.3'
 load: POSTWORLD
 authors: [YouHaveTrouble]
 description: Just a chat plugin
