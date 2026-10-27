@@ -10,6 +10,16 @@ folia-supported: true
 softdepend:
   - PlaceholderAPI
 permissions:
+  chitchat.command.reload:
+    description: Allows reloading plugin config
+    default: op
+    children:
+      chitchat.command: true
+  chitchat.commands.removeplayermessages:
+    description: Allows using command to delete all of player's messages
+    default: op
+    children:
+      chitchat.command: true
   chitchat.deletemessage:
     description: Allows for deletion of messages
     default: op
