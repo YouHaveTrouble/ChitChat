@@ -1,9 +1,9 @@
 package me.youhavetrouble.chitchat;
 
 import me.youhavetrouble.chitchat.commands.ChitChatCommand;
-import me.youhavetrouble.chitchat.commands.RemoveMessageCommand;
 import me.youhavetrouble.chitchat.commands.RemovePlayersMessagesCommand;
 import me.youhavetrouble.chitchat.listeners.ChatListener;
+import me.youhavetrouble.chitchat.listeners.CustomClickListener;
 import net.kyori.adventure.chat.SignedMessage;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -31,11 +31,8 @@ public final class ChitChat extends JavaPlugin {
         this.signatures = new SignatureCache(getConfig().getInt("signature-cache-size", 1000));
 
         getServer().getCommandMap().register("chitchat", new ChitChatCommand(this));
-        getServer().getCommandMap().register("chitchat", new RemoveMessageCommand(this));
         getServer().getCommandMap().register("chitchat", new RemovePlayersMessagesCommand(this));
 
-        new RemoveMessageCommand(this);
-        new ChitChatCommand(this);
     }
 
     public void reloadPluginConfig() {
@@ -54,6 +51,7 @@ public final class ChitChat extends JavaPlugin {
 
         HandlerList.unregisterAll(this);
         getServer().getPluginManager().registerEvents(new ChatListener(this), this);
+        getServer().getPluginManager().registerEvents(new CustomClickListener(this), this);
     }
 
     public boolean isPapiHooked() {

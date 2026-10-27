@@ -16,6 +16,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import net.kyori.adventure.text.minimessage.tag.standard.StandardTags;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -63,9 +64,10 @@ public class ChitChatRenderer implements ChatRenderer {
                     Component.text("[x]")
                             .color(NamedTextColor.RED)
                             .clickEvent(ClickEvent.clickEvent(
-                                    ClickEvent.Action.RUN_COMMAND,
-                                    "/deletemessage " + messageId
-                                    )
+                                    ClickEvent.Action.CUSTOM,
+                                    ClickEvent.Payload.custom(
+                                            new NamespacedKey("chitchat-delete", messageId.toString())
+                                    ))
                             )
                             .hoverEvent(HoverEvent.hoverEvent(
                                     HoverEvent.Action.SHOW_TEXT,
